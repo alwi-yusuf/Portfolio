@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muhammad Alwi Yusuf — Product Monitoring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0D12;
+    --surface: #12161D;
+    --surface-2: #171C24;
+    --border: #232935;
+    --text: #E9E6DE;
+    --muted: #8B93A1;
+    --brass: #C89B5C;
+    --signal: #4C7EFF;
+    --online: #5FBF7A;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    background-image:
+      linear-gradient(rgba(76,126,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(76,126,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(10,13,18,0.75);
+    border-bottom:1px solid var(--border);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px;}
+  .brand{font-family:var(--font-mono);font-size:14px;letter-spacing:0.5px;color:var(--brass);display:flex;align-items:center;gap:8px;}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--online);box-shadow:0 0 8px var(--online);animation:pulse 2s infinite;}
+  .navlinks{display:flex;gap:32px;font-size:14px;color:var(--muted);}
+  .navlinks a:hover{color:var(--text);}
+  @media (max-width:700px){.navlinks{display:none;}}
+
+  @keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.4;}
+  }
+
+  /* HERO */
+  header.hero{padding:90px 0 60px;position:relative;overflow:hidden;}
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:2px;
+    color:var(--signal); text-transform:uppercase; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:'';width:20px;height:1px;background:var(--signal);}
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(38px,6vw,64px); line-height:1.05; letter-spacing:-1px;
+    margin-bottom:16px;
+  }
+  h1 span{color:var(--brass);}
+  .role-line{
+    font-family:var(--font-mono); font-size:16px; color:var(--muted); margin-bottom:28px;
+  }
+  .hero-desc{max-width:520px;color:var(--muted);font-size:15.5px;margin-bottom:34px;}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--font-mono); font-size:13px; padding:12px 22px; border-radius:6px;
+    border:1px solid var(--border); transition:all .2s ease;
+  }
+  .btn-primary{background:var(--brass);color:#12161D;border-color:var(--brass);font-weight:600;}
+  .btn-primary:hover{background:#dbad6c;}
+  .btn-ghost{color:var(--text);}
+  .btn-ghost:hover{border-color:var(--signal);color:var(--signal);}
+
+  /* MONITORING PANEL */
+  .console{
+    margin-top:56px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+  }
+  .console-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;border-bottom:1px solid var(--border);
+    font-family:var(--font-mono);font-size:11px;color:var(--muted);
+  }
+  .console-bar .status{display:flex;align-items:center;gap:8px;color:var(--online);}
+  .console-bar .status .dot{width:6px;height:6px;border-radius:50%;background:var(--online);box-shadow:0 0 6px var(--online);}
+  .scanline{
+    position:absolute;left:0;right:0;height:2px;
+    background:linear-gradient(90deg, transparent, rgba(76,126,255,0.6), transparent);
+    animation:scan 4s linear infinite;
+  }
+  @keyframes scan{
+    0%{top:0;} 100%{top:100%;}
+  }
+  .metrics{
+    display:grid;grid-template-columns:repeat(4,1fr);
+  }
+  @media (max-width:700px){.metrics{grid-template-columns:repeat(2,1fr);}}
+  .metric{
+    padding:22px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  }
+  .metric:nth-child(4n){border-right:none;}
+  .metric .val{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--text);}
+  .metric .lbl{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;}
+
+  /* SECTION HEADS */
+  section{padding:80px 0;border-top:1px solid var(--border);}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:44px;}
+  .sec-num{font-family:var(--font-mono);color:var(--brass);font-size:13px;}
+  .sec-title{font-family:var(--font-display);font-size:clamp(24px,3.2vw,32px);font-weight:600;}
+  .sec-sub{color:var(--muted);font-size:14.5px;max-width:600px;margin-top:-28px;margin-bottom:44px;}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;}
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{color:var(--muted);font-size:15.5px;margin-bottom:16px;}
+  .side-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;
+    font-family:var(--font-mono);font-size:13px;
+  }
+  .side-card .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);color:var(--muted);}
+  .side-card .row:last-child{border-bottom:none;}
+  .side-card .row span:last-child{color:var(--text);}
+
+  /* MODULES GRID (responsibilities) */
+  .modules{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  @media (max-width:700px){.modules{grid-template-columns:1fr;}}
+  .module{background:var(--surface);padding:26px;transition:background .2s;}
+  .module:hover{background:var(--surface-2);}
+  .module .tag{font-family:var(--font-mono);font-size:11px;color:var(--signal);margin-bottom:10px;letter-spacing:1px;}
+  .module h3{font-family:var(--font-display);font-size:17px;margin-bottom:8px;font-weight:600;}
+  .module p{color:var(--muted);font-size:14px;}
+
+  /* LOG LIST (Sertifikat & Pengembangan) */
+  .log{border:1px solid var(--border);border-radius:10px;background:var(--surface);overflow:hidden;}
+  .log-row{
+    display:flex;align-items:center;gap:18px;
+    padding:18px 22px;border-bottom:1px solid var(--border);
+    transition:background .2s;
+  }
+  .log-row:last-child{border-bottom:none;}
+  .log-row:hover{background:var(--surface-2);}
+  .log-year{
+    font-family:var(--font-mono);font-size:12px;color:var(--online);
+    background:rgba(95,191,122,0.1);border:1px solid rgba(95,191,122,0.3);
+    border-radius:20px;padding:4px 12px;flex-shrink:0;min-width:52px;text-align:center;
+  }
+  .log-body{flex:1;min-width:0;}
+  .log-title{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text);}
+  .log-issuer{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:3px;}
+  @media (max-width:600px){
+    .log-row{flex-wrap:wrap;}
+    .log-year{order:-1;}
+  }
+
+  /* TOOLS / BADGES */
+  .badge-group{margin-bottom:28px;}
+  .badge-group h4{font-family:var(--font-mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+  .badges{display:flex;flex-wrap:wrap;gap:10px;}
+  .badge{
+    font-family:var(--font-mono);font-size:13px;padding:8px 16px;border:1px solid var(--border);
+    border-radius:20px;color:var(--text);background:var(--surface);
+    display:flex;align-items:center;gap:8px;
+  }
+  .badge .d{width:5px;height:5px;border-radius:50%;background:var(--online);}
+
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:800px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-card{
+    border:1px solid var(--border);border-radius:10px;padding:26px;background:var(--surface);
+    transition:border-color .2s, transform .2s;
+  }
+  .contact-card:hover{border-color:var(--signal);transform:translateY(-2px);}
+  .contact-card .ic{font-family:var(--font-mono);font-size:11px;color:var(--signal);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+  .contact-card .val{font-family:var(--font-display);font-size:17px;font-weight:600;}
+  .contact-card .note{font-size:12px;color:var(--muted);margin-top:8px;font-family:var(--font-mono);}
+
+  footer{padding:36px 0;text-align:center;color:var(--muted);font-family:var(--font-mono);font-size:12px;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>ALWI.SYS</div>
+    <div class="navlinks">
+      <a href="#about">Tentang</a>
+      <a href="#scope">Cakupan Kerja</a>
+      <a href="#certificates">Sertifikat</a>
+      <a href="#development">Pengembangan</a>
+      <a href="#tools">Sistem &amp; Tools</a>
+      <a href="#contact">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Status: Aktif Bertugas</div>
+    <h1>Muhammad <span>Alwi</span> Yusuf</h1>
+    <div class="role-line">Product Monitoring</div>
+    <p class="hero-desc">
+      Product Monitoring dengan fokus IT infrastructure dan network security — 
+      Riset pasar, strategi penawaran, dan kolaborasi lintas tim untuk menghadirkan solusi yang tepat sasaran bagi klien maupun mitra bisnis
+    </p>
+    <div class="cta-row">
+      <a href="#contact" class="btn btn-primary">Hubungi Saya</a>
+      <a href="#scope" class="btn btn-ghost">Lihat Cakupan Kerja</a>
+    </div>
+
+    <div class="console">
+      <div class="scanline"></div>
+      <div class="console-bar">
+        <span>SYSTEM / PRODUCT-MONITORING / OVERVIEW</span>
+        <span class="status"><span class="dot"></span>ONLINE</span>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="val">Okt 2023</div><div class="lbl">Menjabat Sejak</div></div>
+        <div class="metric"><div class="val">9</div><div class="lbl">Sertifikat Dimiliki</div></div>
+        <div class="metric"><div class="val">50+</div><div class="lbl">Sesi Profesional Development</div></div>
+        <div class="metric"><div class="val">IT Infrastructure</div><div class="lbl">Spesialisasi</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">Tentang</span></div>
+    <div class="about-grid">
+      <div>
+        <p>
+          Saat ini menjabat sebagai Product Monitoring di CV. Solusi Arya Prima, mengelola
+          IT Product &amp; Solutions yang mencakup PC (Desktop &amp; AIO), server infrastructure,
+          networking, security, hingga virtualization solutions.
+        </p>
+        <p>
+          Berperan aktif dalam menganalisis kebutuhan klien dan menerjemahkannya menjadi
+          solusi serta penawaran yang kompetitif, didukung riset pasar dan benchmarking
+          harga yang konsisten. Juga menjaga hubungan kerja sama dengan principal dan
+          distributor sebagai bagian dari rantai penyediaan solusi IT.
+        </p>
+      </div>
+      <div class="side-card">
+        <div class="row"><span>Posisi</span><span>Product Monitoring</span></div>
+        <div class="row"><span>Perusahaan</span><span>CV. Solusi Arya Prima</span></div>
+        <div class="row"><span>Periode</span><span>Okt 2023 – Sekarang</span></div>
+        <div class="row"><span>Fokus</span><span>PC, Server, Network, Security</span></div>
+        <div class="row"><span>ERP</span><span>SAP Business One / Accurate / Odoo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Cakupan Kerja</span></div>
+    <p class="sec-sub">Modul tanggung jawab utama dalam siklus product monitoring sehari-hari.</p>
+    <div class="modules">
+      <div class="module">
+        <div class="tag">PRODUCT &amp; SOLUTIONS</div>
+        <h3>Pengelolaan Produk IT</h3>
+        <p>Mengelola lini PC, server infrastructure, networking, security, dan virtualization solutions secara menyeluruh.</p>
+      </div>
+      <div class="module">
+        <div class="tag">CLIENT ANALYSIS</div>
+        <h3>Analisis Kebutuhan Klien</h3>
+        <p>Menerjemahkan kebutuhan bisnis klien menjadi solusi dan penawaran yang tepat serta kompetitif.</p>
+      </div>
+      <div class="module">
+        <div class="tag">PRICING &amp; ERP</div>
+        <h3>Penawaran Harga &amp; Data Operasional</h3>
+        <p>Menyusun penawaran harga dan mengelola data operasional lewat SAP Business One, Accurate, dan Odoo.</p>
+      </div>
+      <div class="module">
+        <div class="tag">MARKET RESEARCH</div>
+        <h3>Riset &amp; Benchmarking Harga</h3>
+        <p>Melakukan riset pasar dan benchmarking harga untuk memastikan solusi yang optimal bagi klien.</p>
+      </div>
+      <div class="module">
+        <div class="tag">ENABLEMENT</div>
+        <h3>Training &amp; Product Knowledge</h3>
+        <p>Memberikan pelatihan kepada 30+ anggota tim sales termasuk onboarding sales baru.</p>
+      </div>
+      <div class="module">
+        <div class="tag">PRESALES</div>
+        <h3>Koordinasi POC &amp; SOW</h3>
+        <p>Berkoordinasi dengan tim presales dalam penyusunan Proof of Concept dan Scope of Work.</p>
+      </div>
+      <div class="module">
+        <div class="tag">PARTNERSHIPS</div>
+        <h3>Relasi Principal &amp; Distributor</h3>
+        <p>Membangun dan menjaga hubungan kerja sama yang baik dengan principal dan distributor.</p>
+      </div>
+      <div class="module">
+        <div class="tag">DEVELOPMENT</div>
+        <h3>Pengembangan Kompetensi</h3>
+        <p>Aktif mengikuti sertifikasi, training, gathering, dan product refreshment dari distributor & principal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certificates">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Sertifikat Keahlian</span></div>
+    <p class="sec-sub">Log sertifikasi teknis dan penyelesaian pelatihan.</p>
+    <div class="log">
+      
+      <div class="log-row">
+        <span class="log-year">2026</span>
+        <div class="log-body">
+          <div class="log-title">HPE Sales Certified - Hybrid Cloud Solutions</div>
+          <div class="log-issuer">Hewlett Packard Enterprise</div>
+        </div>
+      </div>
+
+      <div class="log-row">
+        <span class="log-year">2026</span>
+        <div class="log-body">
+          <div class="log-title">D-LINK Certified Network Associate (DCNA)</div>
+          <div class="log-issuer">D-LINK</div>
+        </div>
+      </div>
+
+      <div class="log-row">
+        <span class="log-year">2026</span>
+        <div class="log-body">
+          <div class="log-title">Certificate Of Appreciation SonicOS 7.0 Administrator Workshop Sonicwall</div>
+          <div class="log-issuer">Sonicwall</div>
+        </div>
+      </div>
+
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Partner Technical Training &amp; Certification for SAFETICA</div>
+          <div class="log-issuer">Prosperita</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Partner Technical Training &amp; Certification for ESET</div>
+          <div class="log-issuer">Prosperita</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2023</span>
+        <div class="log-body">
+          <div class="log-title">Fundamental of Cyber Security</div>
+          <div class="log-issuer">Course-Net</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2021</span>
+        <div class="log-body">
+          <div class="log-title">Strategi Menjadi Network Admin dan IT Support</div>
+          <div class="log-issuer">Course-Net</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2021</span>
+        <div class="log-body">
+          <div class="log-title">Konfigurasi Router untuk Cisco (CCNA Bagian 3) — Certificate of Excellence</div>
+          <div class="log-issuer">Skill Academy</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2020</span>
+        <div class="log-body">
+          <div class="log-title">Peningkatan Kemampuan Rekayasa Mobile Technology</div>
+          <div class="log-issuer">LPKL FTIK USM</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2020</span>
+        <div class="log-body">
+          <div class="log-title">Java Fundamentals — Certificate of Achievement</div>
+          <div class="log-issuer">Oracle Academy</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2020</span>
+        <div class="log-body">
+          <div class="log-title">COBIT-03</div>
+          <div class="log-issuer">LPKL FTIK USM</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2016</span>
+        <div class="log-body">
+          <div class="log-title">Uji Kompetensi Industri Mikrotik</div>
+          <div class="log-issuer">PT. Desnet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="development">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Professional Development</span></div>
+    <p class="sec-sub">Sesi pelatihan, enablement, dan bootcamp bersama principal &amp; distributor.</p>
+    <div class="log">
+      <div class="log-row">
+        <span class="log-year">2026</span>
+        <div class="log-body">
+          <div class="log-title">Sonicwall Solutions Lab: Mastering Next-Gen Network Security</div>
+          <div class="log-issuer">Sonicwall</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Lenovo Partner Enablement — Server &amp; Server Storage Solutions Sharing Session</div>
+          <div class="log-issuer">Lenovo</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">HPE Virtualization Management Seminar — HPE VM Essentials</div>
+          <div class="log-issuer">HPE</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Business Network &amp; Surveillance (VIGI &amp; Omada Solutions)</div>
+          <div class="log-issuer">TP-Link</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Enablement &amp; Networking Session — Modernize Technology for Brighter Future</div>
+          <div class="log-issuer">ASUS</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Product Update — Enterprise Cybersecurity Solutions</div>
+          <div class="log-issuer">WatchGuard</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2025</span>
+        <div class="log-body">
+          <div class="log-title">Partner Coffee Talk Session — Network Security &amp; Infrastructure Protection</div>
+          <div class="log-issuer">Cisco</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2024</span>
+        <div class="log-body">
+          <div class="log-title">Partner Bootcamp</div>
+          <div class="log-issuer">HPE x Synnex</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2024</span>
+        <div class="log-body">
+          <div class="log-title">Partner Exclusive Session — Integrated Security &amp; Cloud Solutions</div>
+          <div class="log-issuer">Sangfor</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2024</span>
+        <div class="log-body">
+          <div class="log-title">Ekit Training Session</div>
+          <div class="log-issuer">Huawei</div>
+        </div>
+      </div>
+      <div class="log-row">
+        <span class="log-year">2024</span>
+        <div class="log-body">
+          <div class="log-title">Partner Enablement — Allied Telesis Product Training</div>
+          <div class="log-issuer">XDC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Sistem &amp; Tools</span></div>
+    <div class="badge-group">
+      <h4>Kategori Produk</h4>
+      <div class="badges">
+        <span class="badge"><span class="d"></span>PC — Desktop &amp; AIO</span>
+        <span class="badge"><span class="d"></span>Server Infrastructure</span>
+        <span class="badge"><span class="d"></span>Networking</span>
+        <span class="badge"><span class="d"></span>Network Security (Firewall, WAF)</span>
+        <span class="badge"><span class="d"></span>Virtualization Solutions</span>
+      </div>
+    </div>
+    <div class="badge-group">
+      <h4>Sistem ERP &amp; Operasional</h4>
+      <div class="badges">
+        <span class="badge"><span class="d"></span>SAP Business One</span>
+        <span class="badge"><span class="d"></span>Accurate</span>
+        <span class="badge"><span class="d"></span>Odoo</span>
+      </div>
+    </div>
+    <div class="badge-group">
+      <h4>Kompetensi Inti</h4>
+      <div class="badges">
+        <span class="badge"><span class="d"></span>Riset Pasar</span>
+        <span class="badge"><span class="d"></span>Price Benchmarking</span>
+        <span class="badge"><span class="d"></span>Vendor &amp; Distributor Relations</span>
+        <span class="badge"><span class="d"></span>Presales (POC/SOW)</span>
+        <span class="badge"><span class="d"></span>Sales Enablement</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">06</span><span class="sec-title">Kontak</span></div>
+    <div class="contact-grid">
+      <a class="contact-card" href="https://wa.me/6282137346663" target="_blank" rel="noopener">
+        <div class="ic">WhatsApp</div>
+        <div class="val">+62 821-3734-6663</div>
+        
+      </a>
+      <a class="contact-card" href="mailto:alwiyusuf24@email.com">
+        <div class="ic">Email</div>
+        <div class="val">alwiyusuf24@email.com</div>
+
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/muhammad-alwi-yusuf/" target="_blank" rel="noopener">
+        <div class="ic">LinkedIn</div>
+        <div class="val">Klik Disini</div>
+        
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Muhammad Alwi Yusuf — Product Monitoring, IT Infrastructure &amp; Security
+</footer>
+
+</body>
+</html>
